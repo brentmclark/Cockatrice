@@ -20,5 +20,6 @@ void LocalServerInterface::transmitProtocolItem(const ServerMessage &item)
 
 void LocalServerInterface::itemFromClient(const CommandContainer &item)
 {
+    qDebug() << "ZACH" << "LOCAL CLIENT";
     processCommandContainer(item);
 }

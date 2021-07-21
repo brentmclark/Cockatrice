@@ -1591,6 +1591,7 @@ void TcpServerSocketInterface::flushOutputQueue()
 
 void TcpServerSocketInterface::readClient()
 {
+    qDebug() << "ZACH" << "TCG READCLIENT";
     QByteArray data = socket->readAll();
     servatrice->incRxBytes(data.size());
     inputBuffer.append(data);
@@ -1602,8 +1603,15 @@ void TcpServerSocketInterface::readClient()
                                 (((quint32)(unsigned char)inputBuffer[1]) << 16) +
                                 (((quint32)(unsigned char)inputBuffer[2]) << 8) +
                                 ((quint32)(unsigned char)inputBuffer[3]);
-                inputBuffer.remove(0, 4);
-                messageInProgress = true;
+
+                if (messageLength > 1000) {
+                    qDebug() << "ZACH TCP" << "Message too large" << messageLength;
+                    inputBuffer.remove(0, messageLength);
+                } else {
+                    qDebug() << "ZACH TCP" << "Message normal Size" << messageLength;
+                    inputBuffer.remove(0, 4);
+                    messageInProgress = true;
+                }
             } else
                 return;
         }
@@ -1790,6 +1798,12 @@ void WebsocketServerSocketInterface::flushOutputQueue()
 
 void WebsocketServerSocketInterface::binaryMessageReceived(const QByteArray &message)
 {
+    if (message.size() > 1000000) {
+        qDebug() << "ZACH BINARY MESSAGE Message is over size (" << message.size() << ") dropping packet";
+        return;
+    }
+
+    qDebug() << "ZACH BINARY MESSAGE" << message.size();
     servatrice->incRxBytes(message.size());
 
     CommandContainer newCommandContainer;

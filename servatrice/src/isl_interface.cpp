@@ -228,6 +228,7 @@ void IslInterface::flushOutputBuffer()
 
 void IslInterface::readClient()
 {
+    qDebug() << "ZACH" << "ISL READCLIENT";
     QByteArray data = socket->readAll();
     server->incRxBytes(data.size());
     inputBuffer.append(data);
@@ -239,8 +240,14 @@ void IslInterface::readClient()
                                 (((quint32)(unsigned char)inputBuffer[1]) << 16) +
                                 (((quint32)(unsigned char)inputBuffer[2]) << 8) +
                                 ((quint32)(unsigned char)inputBuffer[3]);
-                inputBuffer.remove(0, 4);
-                messageInProgress = true;
+                if (messageLength > 1000) {
+                    qDebug() << "ZACH ISL" << "Message too large" << messageLength;
+                    inputBuffer.remove(0, messageLength);
+                } else {
+                    qDebug() << "ZACH ISL" << "Message Normal Size" << messageLength;
+                    inputBuffer.remove(0, 4);
+                    messageInProgress = true;
+                }
             } else
                 return;
         }

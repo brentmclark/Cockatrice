@@ -2,6 +2,7 @@
 
 #include "featureset.h"
 #include "get_pb_extension.h"
+#include "pb/command_deck_select.pb.h"
 #include "pb/commands.pb.h"
 #include "pb/event_game_joined.pb.h"
 #include "pb/event_list_rooms.pb.h"
@@ -275,8 +276,28 @@ Response::ResponseCode Server_ProtocolHandler::processGameCommandContainer(const
     Response::ResponseCode finalResponseCode = Response::RespOk;
     for (int i = cont.game_command_size() - 1; i >= 0; --i) {
         const GameCommand &sc = cont.game_command(i);
-        logDebugMessage(QString("game %1 player %2: ").arg(cont.game_id()).arg(roomIdAndPlayerId.second) +
-                        QString::fromStdString(sc.ShortDebugString()));
+
+        // TEMP FIX -- We should look at rejecting decks that are too large (>=1MB) with a proper
+        // user message and helpful logging
+        if ((GameCommand::GameCommandType)getPbExtension(sc) == GameCommand_GameCommandType_DECK_SELECT) {
+            if (sc.GetExtension(Command_DeckSelect::ext).deck().size() > 1000000) {
+                logDebugMessage(QString("game %1 player %2: DECK TOO LARGE %3")
+                                    .arg(cont.game_id())
+                                    .arg(roomIdAndPlayerId.second)
+                                    .arg(sc.GetExtension(Command_DeckSelect::ext).deck().size()));
+                return Response::RespNothing;
+            }
+        }
+
+        // TEMP FIX -- Prevent logging more than 1KB per message
+        const auto size = 100000;
+        auto logMessage = QString::fromStdString(sc.ShortDebugString());
+        if (logMessage.size() > size) {
+            logMessage = logMessage.left(size) + "...";
+        }
+
+        logDebugMessage(
+            QString("game %1 player %2: %3").arg(cont.game_id()).arg(roomIdAndPlayerId.second).arg(logMessage));
 
         if (commandCountingInterval > 0) {
             int totalCount = 0;

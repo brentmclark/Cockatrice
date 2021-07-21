@@ -1704,6 +1704,7 @@ void WebsocketServerSocketInterface::initConnection(void *_socket)
     }
     socket = (QWebSocket *)_socket;
     socket->setParent(this);
+    socket->setReadBufferSize(1000000);
     address = socket->peerAddress();
 
     QByteArray websocketIPHeader = settingsCache->value("server/web_socket_ip_header", "").toByteArray();

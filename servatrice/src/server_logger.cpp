@@ -45,31 +45,34 @@ void ServerLogger::startLog(const QString &logFileName)
     connect(this, SIGNAL(sigFlushBuffer()), this, SLOT(flushBuffer()), Qt::QueuedConnection);
 }
 
-void ServerLogger::logMessage(QString message, void *caller)
+void ServerLogger::logMessage(const QString &message, void *caller)
 {
-    if (!logFile)
+    if (!logFile) {
         return;
+    }
 
     QString callerString;
-    if (caller)
+    if (caller) {
         callerString = QString::number((qulonglong)caller, 16) + " ";
+    }
 
     // filter out all log entries based on values in configuration file
-    bool shouldWeWriteLog = settingsCache->value("server/writelog", 1).toBool();
-    QString logFilters = settingsCache->value("server/logfilters").toString();
+    const auto shouldWeWriteLog = settingsCache->value("server/writelog", 1).toBool();
+    const auto logFilters = settingsCache->value("server/logfilters").toString();
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
-    QStringList listlogFilters = logFilters.split(",", Qt::SkipEmptyParts);
+    const auto listLogFilters = logFilters.split(",", Qt::SkipEmptyParts);
 #else
-    QStringList listlogFilters = logFilters.split(",", QString::SkipEmptyParts);
+    const auto listLogFilters = logFilters.split(",", QString::SkipEmptyParts);
 #endif
     bool shouldWeSkipLine = false;
 
-    if (!shouldWeWriteLog)
+    if (!shouldWeWriteLog) {
         return;
+    }
 
     if (!logFilters.trimmed().isEmpty()) {
         shouldWeSkipLine = true;
-        foreach (QString logFilter, listlogFilters) {
+        for (const auto &logFilter : listLogFilters) {
             if (message.contains(logFilter, Qt::CaseInsensitive)) {
                 shouldWeSkipLine = false;
                 break;
@@ -77,8 +80,9 @@ void ServerLogger::logMessage(QString message, void *caller)
         }
     }
 
-    if (shouldWeSkipLine)
+    if (shouldWeSkipLine) {
         return;
+    }
 
     bufferMutex.lock();
     buffer.append(QDateTime::currentDateTime().toString() + " " + callerString + message);

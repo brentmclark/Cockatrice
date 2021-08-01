@@ -1209,17 +1209,23 @@ Response::ResponseCode AbstractServerSocketInterface::cmdAccountEdit(const Comma
 Response::ResponseCode AbstractServerSocketInterface::cmdAccountImage(const Command_AccountImage &cmd,
                                                                       ResponseContainer & /* rc */)
 {
-    if (authState != PasswordRight)
+    if (authState != PasswordRight) {
         return Response::RespFunctionNotAllowed;
+    }
 
-    QByteArray image(cmd.image().c_str(), cmd.image().length());
-    int id = userInfo->id();
+    QByteArray image(cmd.image().c_str(), static_cast<int>(cmd.image().length()));
+    const int id = userInfo->id();
 
-    QSqlQuery *query = sqlInterface->prepareQuery("update {prefix}_users set avatar_bmp=:image where id=:id");
+    QSqlQuery *query = sqlInterface->prepareUncachedQuery("update {prefix}_users set avatar_bmp=:image where id=:id");
     query->bindValue(":image", image);
     query->bindValue(":id", id);
-    if (!sqlInterface->execSqlQuery(query))
+
+    const bool sqlQuerySucceeded = sqlInterface->execSqlQuery(query);
+    delete query;
+
+    if (!sqlQuerySucceeded) {
         return Response::RespInternalError;
+    }
 
     userInfo->set_avatar_bmp(cmd.image().c_str(), cmd.image().length());
     return Response::RespOk;

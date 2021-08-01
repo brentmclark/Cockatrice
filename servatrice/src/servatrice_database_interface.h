@@ -50,8 +50,9 @@ public:
                       const QString &password);
     bool openDatabase();
     bool checkSql();
+    QSqlQuery *prepareUncachedQuery(const QString &queryText);
     QSqlQuery *prepareQuery(const QString &queryText);
-    bool execSqlQuery(QSqlQuery *query);
+    bool execSqlQuery(QSqlQuery *query) const;
     const QSqlDatabase &getDatabase()
     {
         return sqlDatabase;

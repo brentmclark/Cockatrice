@@ -130,7 +130,7 @@ Response::ResponseCode Server_ProtocolHandler::processSessionCommandContainer(co
 {
     Response::ResponseCode finalResponseCode = Response::RespOk;
     for (int i = cont.session_command_size() - 1; i >= 0; --i) {
-        Response::ResponseCode resp = Response::RespInvalidCommand;
+        Response::ResponseCode resp;
         const SessionCommand &sc = cont.session_command(i);
         const int num = getPbExtension(sc);
         if (num != SessionCommand::PING) {      // don't log ping commands
@@ -142,8 +142,9 @@ Response::ResponseCode Server_ProtocolHandler::processSessionCommandContainer(co
                 SessionCommand logSc(sc);
                 logSc.MutableExtension(Command_Register::ext)->clear_password();
                 logDebugMessage(QString::fromStdString(logSc.ShortDebugString()));
-            } else
+            } else {
                 logDebugMessage(QString::fromStdString(sc.ShortDebugString()));
+            }
         }
         switch ((SessionCommand::SessionCommandType)num) {
             case SessionCommand::PING:

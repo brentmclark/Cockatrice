@@ -111,26 +111,41 @@ bool Servatrice_DatabaseInterface::checkSql()
     return true;
 }
 
-QSqlQuery *Servatrice_DatabaseInterface::prepareQuery(const QString &queryText)
+/**
+ * Get SQL Query, knowing it won't be cached
+ * @param queryText SQL Query Text
+ * @return QSQLQuery Object
+ */
+QSqlQuery *Servatrice_DatabaseInterface::prepareUncachedQuery(const QString &queryText)
 {
-    if (preparedStatements.contains(queryText))
-        return preparedStatements.value(queryText);
-
     QString prefixedQueryText = queryText;
     prefixedQueryText.replace("{prefix}", server->getDbPrefix());
-    QSqlQuery *query = new QSqlQuery(sqlDatabase);
+    auto *query = new QSqlQuery(sqlDatabase);
     query->prepare(prefixedQueryText);
-
-    preparedStatements.insert(queryText, query);
     return query;
 }
 
-bool Servatrice_DatabaseInterface::execSqlQuery(QSqlQuery *query)
+/**
+ * Get SQL Query, knowing it might have already been cached / will be cached
+ * @param queryText SQL Query Text
+ * @return QSQLQuery Object
+ */
+QSqlQuery *Servatrice_DatabaseInterface::prepareQuery(const QString &queryText)
 {
-    if (query->exec())
+    if (!preparedStatements.contains(queryText)) {
+        preparedStatements.insert(queryText, prepareUncachedQuery(queryText));
+    }
+    return preparedStatements.value(queryText);
+}
+
+bool Servatrice_DatabaseInterface::execSqlQuery(QSqlQuery *query) const
+{
+    if (query->exec()) {
         return true;
+    }
+
     const QString poolStr = instanceId == -1 ? QString("main") : QString("pool %1").arg(instanceId);
-    qCritical() << QString("[%1] Error executing query: %2").arg(poolStr).arg(query->lastError().text());
+    qCritical() << QString("[%1] Error executing query: %2").arg(poolStr, query->lastError().text());
     return false;
 }
 

@@ -76,12 +76,9 @@ GeneralSettingsPage::GeneralSettingsPage()
 
     connect(&languageBox, SIGNAL(currentIndexChanged(int)), this, SLOT(languageBoxChanged(int)));
     connect(&pixmapCacheEdit, SIGNAL(valueChanged(int)), &settings, SLOT(setPixmapCacheSize(int)));
-    connect(&updateReleaseChannelBox, SIGNAL(currentIndexChanged(int)), &settings,
-            SLOT(setUpdateReleaseChannel(int)));
-    connect(&updateNotificationCheckBox, SIGNAL(stateChanged(int)), &settings,
-            SLOT(setNotifyAboutUpdate(int)));
-    connect(&newVersionOracleCheckBox, SIGNAL(stateChanged(int)), &settings,
-            SLOT(setNotifyAboutNewVersion(int)));
+    connect(&updateReleaseChannelBox, SIGNAL(currentIndexChanged(int)), &settings, SLOT(setUpdateReleaseChannel(int)));
+    connect(&updateNotificationCheckBox, SIGNAL(stateChanged(int)), &settings, SLOT(setNotifyAboutUpdate(int)));
+    connect(&newVersionOracleCheckBox, SIGNAL(stateChanged(int)), &settings, SLOT(setNotifyAboutNewVersion(int)));
     connect(&showTipsOnStartup, SIGNAL(clicked(bool)), &settings, SLOT(setShowTipsOnStartup(bool)));
 
     auto *personalGrid = new QGridLayout;

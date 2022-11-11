@@ -143,6 +143,11 @@ class Header extends Component<HeaderProps> {
                       <ArrowDropDownIcon className="Header-nav__link-btn__icon" fontSize="small" />
                     </NavLink>
                   </div>
+                  <div className="Header-nav__link">
+                    <NavLink className="Header-nav__link-btn" to={ RouteEnum.SOCIAL }>
+                      Social
+                    </NavLink>
+                  </div>
                 </nav>
                 <div className="Header-nav__actions">
                   <div className="Header-nav__action">

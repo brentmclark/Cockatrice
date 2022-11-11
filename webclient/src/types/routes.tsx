@@ -8,6 +8,7 @@ export enum RouteEnum {
   DECKS = '/decks',
   DECK = '/deck',
   ACCOUNT = '/account',
+  SOCIAL = '/social',
   ADMINISTRATION = '/administration',
   REPLAYS = '/replays',
   INITIALIZE = '/initialize',

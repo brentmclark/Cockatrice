@@ -1,0 +1,34 @@
+.social__container {
+    height: 100%;
+}
+
+.buddies__container {
+    margin-left: auto;
+    min-width: 250px;
+    max-width: 400px;
+    width: 25vw;
+    border-left: 1px solid #FFF;
+    background: #FFF;
+    height: 100%;
+}
+
+.buddy__container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.buddy__avatar img {
+    border-radius: 50%;
+}
+
+.buddy__details {
+    display: flex;
+    flex-flow: column;
+}
+
+.buddy__controls {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}

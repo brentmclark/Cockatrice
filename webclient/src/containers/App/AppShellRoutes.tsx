@@ -12,18 +12,20 @@ import {
   Login,
   Logs,
   Initialize,
-  Unsupported
+  Unsupported,
+  Social,
 } from 'containers';
 
 const Routes = () => (
   <div className="AppShell-routes overflow-scroll">
     <Switch>
       <Route path={RouteEnum.ACCOUNT} render={() => <Account />} />
+      <Route path={RouteEnum.SOCIAL} render={() => <Social />} />
       <Route path={RouteEnum.DECKS} render={() => <Decks />} />
       <Route path={RouteEnum.GAME} render={() => <Game />} />
       <Route path={RouteEnum.LOGS} render={() => <Logs />} />
       <Route path={RouteEnum.PLAYER} render={() => <Player />} />
-      {<Route path={RouteEnum.ROOM} render={() => <Room />} />}
+      <Route path={RouteEnum.ROOM} render={() => <Room />} />
       <Route path={RouteEnum.SERVER} render={() => <Server />} />
       <Route path={RouteEnum.LOGIN} render={() => <Login />} />
       <Route path={RouteEnum.INITIALIZE} render={() => <Initialize />} />

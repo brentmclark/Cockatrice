@@ -18,7 +18,7 @@ import AddToIgnore from './AddToIgnore';
 import './Account.css';
 
 const Account = (props: AccountProps) => {
-  const { buddyList, ignoreList, serverName, serverVersion, user } = props;
+  const { buddyList, ignoreList, serverName, serverVersion, user, users } = props;
   const { country, realName, name, userLevel, accountageSecs, avatarBmp } = user;
   let url = URL.createObjectURL(new Blob([avatarBmp], { 'type': 'image/png' }));
 
@@ -49,7 +49,7 @@ const Account = (props: AccountProps) => {
             )) }
           />
           <div className="" style={{ borderTop: '1px solid' }}>
-            <AddToBuddies onSubmit={handleAddToBuddies} />
+            <AddToBuddies onSubmit={handleAddToBuddies} users={users} />
           </div>
         </Paper>
       </div>
@@ -106,6 +106,7 @@ interface AccountProps {
   serverName: string;
   serverVersion: string;
   user: User;
+  users: User[];
 }
 
 const mapStateToProps = state => ({
@@ -114,6 +115,7 @@ const mapStateToProps = state => ({
   serverName: ServerSelectors.getName(state),
   serverVersion: ServerSelectors.getVersion(state),
   user: ServerSelectors.getUser(state),
+  users: ServerSelectors.getUsers(state),
 });
 
 export default connect(mapStateToProps)(Account);

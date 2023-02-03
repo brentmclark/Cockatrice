@@ -4,8 +4,6 @@ import ErrorOutlinedIcon from '@mui/icons-material/ErrorOutlined';
 
 import { InputField } from 'components';
 
-import './AutocompleteField.css';
-
 const PREFIX = 'AutocompleteField';
 
 const classes = {
